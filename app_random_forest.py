@@ -1,8 +1,8 @@
-import nltk
+# import nltk
 import pandas as pd
 import re
-from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
+# from nltk.corpus import stopwords
+# from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -13,12 +13,27 @@ import numpy as np
 
 # nltk.download('stopwords')
 
+# ps = PorterStemmer()
+# stop_words = set(stopwords.words('english'))
+
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+from nltk.stem import PorterStemmer
+
 ps = PorterStemmer()
-stop_words = set(stopwords.words('english'))
+stop_words = ENGLISH_STOP_WORDS
+
 
 # -----------------------------
 # Preprocessing function
 # -----------------------------
+# def preprocess_text(content):
+#     if not isinstance(content, str):
+#         return ""
+#     content = re.sub('[^a-zA-Z]', ' ', content)
+#     content = content.lower().split()
+#     content = [ps.stem(word) for word in content if word not in stop_words]
+#     return ' '.join(content)
+
 def preprocess_text(content):
     if not isinstance(content, str):
         return ""
@@ -28,11 +43,21 @@ def preprocess_text(content):
     return ' '.join(content)
 
 
-def load_and_prepare_data():
-    df = pd.read_csv("news.csv", usecols=['Statement', 'Label'], low_memory=False, encoding='latin1')
-    df = df.dropna(subset=['Statement', 'Label'])
-    df['processed'] = df['Statement'].apply(preprocess_text)
-    return df
+
+# def load_and_prepare_data():
+#     df = pd.read_csv("news.csv", usecols=['Statement', 'Label'], low_memory=False, encoding='latin1')
+#     df = df.dropna(subset=['Statement', 'Label'])
+#     df['processed'] = df['Statement'].apply(preprocess_text)
+#     return df
+
+def preprocess_text(content):
+    if not isinstance(content, str):
+        return ""
+    content = re.sub('[^a-zA-Z]', ' ', content)
+    content = content.lower().split()
+    content = [word for word in content if word not in ENGLISH_STOP_WORDS]
+    return ' '.join(content)
+
 
 
 def vectorize_and_split(df):
@@ -148,4 +173,5 @@ plt.show()
 
 #     result = "🟥 FAKE NEWS" if prediction == 1 else "🟩 REAL NEWS"
 #     print(f"Prediction: {result}")
+
 
