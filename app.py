@@ -1,9 +1,9 @@
 import streamlit as st
 import re
 import joblib
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
+# import nltk
+# from nltk.corpus import stopwords
+# from nltk.stem import PorterStemmer
 import numpy as np
 import pandas as pd
 import os
@@ -14,8 +14,15 @@ import gdown
 # --------------------------------------------------
 # nltk.download('stopwords')  # ❌ keep commented for deployment
 
+# ps = PorterStemmer()
+# stop_words = set(stopwords.words('english'))
+
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+from nltk.stem import PorterStemmer
+
 ps = PorterStemmer()
-stop_words = set(stopwords.words('english'))
+stop_words = ENGLISH_STOP_WORDS
+
 
 # --------------------------------------------------
 # Google Drive model download (handles >25MB files)
@@ -34,13 +41,22 @@ download_file(VECT_URL, "tfidf_vectorizer.pkl")
 # --------------------------------------------------
 # Text preprocessing
 # --------------------------------------------------
+# def preprocess_text(content):
+#     if not isinstance(content, str):
+#         return ""
+#     content = re.sub('[^a-zA-Z]', ' ', content)
+#     content = content.lower().split()
+#     content = [ps.stem(word) for word in content if word not in stop_words]
+#     return ' '.join(content)
+
 def preprocess_text(content):
     if not isinstance(content, str):
         return ""
     content = re.sub('[^a-zA-Z]', ' ', content)
     content = content.lower().split()
-    content = [ps.stem(word) for word in content if word not in stop_words]
+    content = [word for word in content if word not in ENGLISH_STOP_WORDS]
     return ' '.join(content)
+
 
 # --------------------------------------------------
 # Load model & vectorizer (cached)
@@ -154,3 +170,4 @@ st.markdown(
     "<p style='text-align:center; color:#6c757d;'>Developed with ❤️ using Streamlit</p>",
     unsafe_allow_html=True
 )
+
