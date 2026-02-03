@@ -39,25 +39,16 @@ def preprocess_text(content):
         return ""
     content = re.sub('[^a-zA-Z]', ' ', content)
     content = content.lower().split()
-    content = [ps.stem(word) for word in content if word not in stop_words]
-    return ' '.join(content)
-
-
-
-# def load_and_prepare_data():
-#     df = pd.read_csv("news.csv", usecols=['Statement', 'Label'], low_memory=False, encoding='latin1')
-#     df = df.dropna(subset=['Statement', 'Label'])
-#     df['processed'] = df['Statement'].apply(preprocess_text)
-#     return df
-
-def preprocess_text(content):
-    if not isinstance(content, str):
-        return ""
-    content = re.sub('[^a-zA-Z]', ' ', content)
-    content = content.lower().split()
     content = [word for word in content if word not in ENGLISH_STOP_WORDS]
     return ' '.join(content)
 
+
+
+def load_and_prepare_data():
+    df = pd.read_csv("news.csv", usecols=['Statement', 'Label'], low_memory=False, encoding='latin1')
+    df = df.dropna(subset=['Statement', 'Label'])
+    df['processed'] = df['Statement'].apply(preprocess_text)
+    return df
 
 
 def vectorize_and_split(df):
@@ -173,5 +164,6 @@ plt.show()
 
 #     result = "🟥 FAKE NEWS" if prediction == 1 else "🟩 REAL NEWS"
 #     print(f"Prediction: {result}")
+
 
 
